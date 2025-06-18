@@ -12,10 +12,11 @@ use App\Http\Controllers\Admin\CarOptionController;
 use App\Http\Controllers\Admin\CarOrderController;
 use App\Http\Controllers\Admin\AccessoryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\CartController;
 
 // --- Cổng public ---
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 // Dashboard cho user
@@ -50,11 +51,27 @@ Route::middleware(['auth', IsAdmin::class])
         Route::resource('/car-orders', CarOrderController::class);
 
         // Quản lý phụ kiện
-        Route::resource('/accessories', AccessoryController::class);
+        Route::resource('/accessories', \App\Http\Controllers\Admin\AccessoryController::class);
 
         // Quản lý đơn hàng phụ kiện
         Route::resource('/orders', OrderController::class);
     });
+
+// Danh sách & chi tiết ô tô cho user/guest
+Route::get('/cars', [CarModelController::class, 'index'])->name('cars.index');
+Route::get('/cars/{id}', [CarModelController::class, 'show'])->name('cars.show');
+
+// Danh sách & chi tiết phụ kiện cho user/guest
+Route::get('/accessories', [\App\Http\Controllers\AccessoryController::class, 'index'])->name('accessories.index');
+Route::get('/accessories/{id}', [\App\Http\Controllers\AccessoryController::class, 'show'])->name('accessories.show');
+
+// Đặt mua ô tô
+Route::get('/cars/{id}/order', [\App\Http\Controllers\CarOrderController::class, 'create'])->name('cars.order');
+Route::post('/cars/{id}/order', [\App\Http\Controllers\CarOrderController::class, 'store'])->name('cars.order.store');
+
+// Giỏ hàng phụ kiện
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 // --- Auth (Login / Register / Forgot password...) ---
 require __DIR__.'/auth.php';

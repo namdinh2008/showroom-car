@@ -18,11 +18,12 @@
                 <ul class="space-y-2 text-sm font-medium">
                     <li><a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-100 font-bold' : '' }}">📊 Dashboard</a></li>
                     <li><a href="{{ route('admin.carmodels.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">🚙 Quản lý mẫu xe</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">⚙️ Tuỳ chọn cấu hình</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">📦 Đơn đặt xe</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">🧰 Phụ kiện</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">🧾 Đơn hàng phụ kiện</a></li>
-                    <li><a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">👤 Người dùng</a></li>
+                    <li><a href="{{ route('admin.carconfigurationoptions.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">⚙️ Tuỳ chọn cấu hình</a></li>
+                    <li><a href="{{ route('admin.carorders.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">📦 Đơn đặt xe</a></li>
+                    <li><a href="{{ route('admin.accessories.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">🧰 Phụ kiện</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">🧾 Đơn hàng phụ kiện</a></li>
+                    <li><a href="{{ route('admin.users.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">👤 Người dùng</a></li>
+                    <li><a href="{{ route('admin.reports.index') }}" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100">📈 Báo cáo doanh thu</a></li>
                 </ul>
             </nav>
 
