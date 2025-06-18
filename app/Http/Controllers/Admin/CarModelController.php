@@ -26,42 +26,45 @@ class CarModelController extends Controller
             'base_price' => 'required|numeric',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
-            'is_active' => 'boolean',
         ]);
+
+        // Nếu checkbox không được check thì không có trong request
+        $validated['is_active'] = $request->has('is_active');
 
         CarModel::create($validated);
 
-        return redirect()->route('admin.carmodels.index')->with('success', 'Thêm mẫu xe thành công!');
+        return redirect('/admin/carmodels')->with('success', 'Car model added successfully!');
     }
 
-    public function show(CarModel $carModel)
+    public function edit($id)
     {
-        return view('admin.carmodels.show', compact('carModel'));
-    }
-
-    public function edit(CarModel $carModel)
-    {
+        $carModel = CarModel::findOrFail($id);
         return view('admin.carmodels.edit', compact('carModel'));
     }
 
-    public function update(Request $request, CarModel $carModel)
+    public function update(Request $request, $id)
     {
+        $carModel = CarModel::findOrFail($id);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'base_price' => 'required|numeric',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
-            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->has('is_active');
 
         $carModel->update($validated);
 
-        return redirect()->route('admin.carmodels.index')->with('success', 'Cập nhật mẫu xe thành công!');
+        return redirect('/admin/carmodels')->with('success', 'Car model updated successfully!');
     }
 
-    public function destroy(CarModel $carModel)
+    public function destroy($id)
     {
+        $carModel = CarModel::findOrFail($id);
         $carModel->delete();
-        return redirect()->route('admin.carmodels.index')->with('success', 'Đã xoá mẫu xe!');
+
+        return redirect('/admin/carmodels')->with('success', 'Car model deleted successfully!');
     }
 }

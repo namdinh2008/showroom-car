@@ -9,14 +9,20 @@ class CarModel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'base_price', 'description', 'image_url', 'is_active'
+        'car_model_id',
+        'option_type',
+        'name',
+        'price_adjustment',
+        'image_url',
     ];
 
-    public function configurationOptions() {
+    public function configurationOptions()
+    {
         return $this->hasMany(CarConfigurationOption::class);
     }
 
-    public function carOrders() {
+    public function carOrders()
+    {
         return $this->hasMany(CarOrder::class);
     }
 }
