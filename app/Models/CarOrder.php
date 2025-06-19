@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,18 +10,19 @@ class CarOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'car_model_id', 'total_price', 'status'
+        'user_id',
+        'car_model_id',
+        'total_price',
+        'status',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function carModel() {
+    public function carModel()
+    {
         return $this->belongsTo(CarModel::class);
-    }
-
-    public function options() {
-        return $this->hasMany(CarOrderOption::class);
     }
 }

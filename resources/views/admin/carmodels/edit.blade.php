@@ -1,32 +1,58 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Edit Car Model')
 
 @section('content')
-<div class="container mx-auto mt-6">
-    <h1 class="text-xl font-bold mb-4">Chỉnh sửa mẫu xe</h1>
-    <form action="{{ route('admin.carmodels.update', $carModel) }}" method="POST">
-        @csrf @method('PUT')
+<div class="bg-white p-6 rounded shadow max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">✏️ UPDATE CAR MODEL</h1>
+    <form action="{{ route('admin.carmodels.update', ['carmodel' => $carModel->id]) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        {{-- Car Name --}}
         <div class="mb-4">
-            <label>Tên xe:</label>
-            <input type="text" name="name" value="{{ $carModel->name }}" class="w-full border rounded p-2" required>
+            <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Car model name</label>
+            <input type="text" id="name" name="name" value="{{ old('name', $carModel->name) }}"
+                class="w-full border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:ring-indigo-200 shadow-sm"
+                required>
         </div>
+
+        {{-- Base Price --}}
         <div class="mb-4">
-            <label>Giá cơ bản:</label>
-            <input type="number" name="base_price" value="{{ $carModel->base_price }}" class="w-full border rounded p-2" required>
+            <label for="base_price" class="block text-sm font-semibold text-gray-700 mb-1">Base price</label>
+            <input type="number" id="base_price" name="base_price" value="{{ old('base_price', $carModel->base_price) }}"
+                class="w-full border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:ring-indigo-200 shadow-sm"
+                required>
         </div>
+
+        {{-- Description --}}
         <div class="mb-4">
-            <label>Mô tả:</label>
-            <textarea name="description" class="w-full border rounded p-2">{{ $carModel->description }}</textarea>
+            <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+            <textarea id="description" name="description" rows="4"
+                class="w-full border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:ring-indigo-200 shadow-sm">{{ old('description', $carModel->description) }}</textarea>
         </div>
+
+        {{-- Image URL --}}
         <div class="mb-4">
-            <label>Link ảnh:</label>
-            <input type="url" name="image_url" value="{{ $carModel->image_url }}" class="w-full border rounded p-2">
+            <label for="image_url" class="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
+            <input type="url" id="image_url" name="image_url" value="{{ old('image_url', $carModel->image_url) }}"
+                class="w-full border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:ring-indigo-200 shadow-sm">
         </div>
-        <div class="mb-4">
-            <label>
-                <input type="checkbox" name="is_active" value="1" {{ $carModel->is_active ? 'checked' : '' }}> Hiển thị
-            </label>
+
+        {{-- Active --}}
+        <div class="mb-4 flex items-center gap-3">
+            <input type="checkbox" id="is_active" name="is_active" value="1" class="text-indigo-600 rounded"
+                {{ old('is_active', $carModel->is_active) ? 'checked' : '' }}>
+            <label for="is_active" class="text-sm text-gray-700">Active</label>
         </div>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">Cập nhật</button>
+
+        {{-- Save Button --}}
+        <div class="text-right">
+            <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-2 bg-indigo-600 font-semibold rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
+                Update car model
+            </button>
+        </div>
     </form>
 </div>
 @endsection
