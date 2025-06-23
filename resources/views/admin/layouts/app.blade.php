@@ -26,6 +26,8 @@
                             Orders</a></li>
                     <li><a href="{{ route('admin.accessories.index') }}"
                             class="block px-3 py-2 rounded hover:bg-gray-100">🛠 Accessories</a></li>
+                    <li><a href="{{ route('admin.products.index') }}"
+                            class="block px-3 py-2 rounded hover:bg-gray-100">📦 All Products</a></li>
                     <li><a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100">👤
                             Users</a></li>
                     {{-- Add more links here --}}

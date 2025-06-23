@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->decimal('price', 12, 2);
             $table->string('image_url')->nullable();
-            $table->enum('product_type', ['car', 'accessory']);
+            $table->enum('product_type', ['car_variant', 'accessory']);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

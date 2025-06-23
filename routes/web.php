@@ -59,6 +59,16 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
         Route::delete('/delete/{carvariant}', [CarVariantController::class, 'destroy'])->name('destroy');
     });
 
+    // Accessories
+    Route::prefix('admin/accessories')->name('admin.accessories.')->group(function () {
+    Route::get('/', [AccessoryController::class, 'index'])->name('index');
+    Route::get('/create', [AccessoryController::class, 'create'])->name('create');
+    Route::post('/', [AccessoryController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
+});
+
     // Orders
     Route::prefix('orders')->name('orders.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
@@ -67,6 +77,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
         Route::get('/edit/{order}', [OrderController::class, 'edit'])->name('edit');
         Route::put('/update/{order}', [OrderController::class, 'update'])->name('update');
         Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show');
     });
 
     // Products
