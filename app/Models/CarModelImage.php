@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CarConfigurationOption extends Model
+class CarModelImage extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'car_model_id',
-        'option_type',
-        'name',
-        'additional_price',
-        'is_active',
+        'image_url',
+        'is_main',
     ];
 
     public function carModel()

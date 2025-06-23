@@ -5,27 +5,22 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('car_configuration_options', function (Blueprint $table) {
+        Schema::create('car_variants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('car_model_id')->constrained()->onDelete('cascade');
-            $table->string('option_type');
             $table->string('name');
-            $table->decimal('price_adjustment', 12, 2)->default(0);
-            $table->string('image_url')->nullable();
+            $table->text('description')->nullable();
+            $table->text('features')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('car_configuration_options');
+        Schema::dropIfExists('car_variants');
     }
 };
