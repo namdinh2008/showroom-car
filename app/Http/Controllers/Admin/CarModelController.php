@@ -8,47 +8,58 @@ use Illuminate\Http\Request;
 
 class CarModelController extends Controller
 {
-    public function index()
+    // Danh sách mẫu xe với tìm kiếm
+    public function index(Request $request)
     {
-        $carModels = CarModel::all();
-        return view('admin.carmodels.index', compact('carModels'));
+        $search = $request->input('search');
+        $query = CarModel::query();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $carModels = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('admin.carmodels.index', compact('carModels', 'search'));
     }
 
+    // Hiển thị form thêm mẫu xe
     public function create()
     {
         return view('admin.carmodels.create');
     }
 
+    // Lưu mẫu xe mới
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'base_price' => 'required|numeric',
+            'name' => 'required|min:3',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
         ]);
 
-        // Nếu checkbox không được check thì không có trong request
         $validated['is_active'] = $request->has('is_active');
 
         CarModel::create($validated);
 
-        return redirect('/admin/carmodels')->with('success', 'Car model added successfully!');
+        return redirect()->route('admin.carmodels.index')->with('success', 'Thêm mẫu xe thành công!');
     }
 
+    // Form chỉnh sửa
     public function edit($id)
     {
         $carModel = CarModel::findOrFail($id);
+
         return view('admin.carmodels.edit', compact('carModel'));
     }
 
+    // Cập nhật mẫu xe
     public function update(Request $request, $id)
     {
         $carModel = CarModel::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'base_price' => 'required|numeric',
+            'name' => 'required|min:3',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
         ]);
@@ -57,14 +68,15 @@ class CarModelController extends Controller
 
         $carModel->update($validated);
 
-        return redirect('/admin/carmodels')->with('success', 'Car model updated successfully!');
+        return redirect()->route('admin.carmodels.index')->with('success', 'Cập nhật mẫu xe thành công!');
     }
 
+    // Xóa mẫu xe
     public function destroy($id)
     {
         $carModel = CarModel::findOrFail($id);
         $carModel->delete();
 
-        return redirect('/admin/carmodels')->with('success', 'Car model deleted successfully!');
+        return redirect()->route('admin.carmodels.index')->with('success', 'Đã xóa mẫu xe!');
     }
 }
