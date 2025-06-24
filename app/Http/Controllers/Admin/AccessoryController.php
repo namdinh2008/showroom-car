@@ -43,7 +43,7 @@ class AccessoryController extends Controller
 
     public function edit($id)
     {
-        $accessory = Product::findOrFail($id);
+        $accessory = Accessory::with('product')->findOrFail($id);
         return view('admin.accessories.edit', compact('accessory'));
     }
 
@@ -68,7 +68,8 @@ class AccessoryController extends Controller
 
     public function destroy($id)
     {
-        Product::findOrFail($id)->delete();
+        $accessory = Accessory::findOrFail($id);
+        $accessory->product()->delete();
         return redirect()->route('admin.accessories.index')->with('success', 'Xoá phụ kiện thành công!');
     }
 }

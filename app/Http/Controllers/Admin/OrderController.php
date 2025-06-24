@@ -41,6 +41,14 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
 
+        $request->merge([
+            'name' => $order->name,
+            'email' => $order->email,
+            'phone' => $order->phone,
+            'address' => $order->address,
+            'payment_method' => $order->payment_method,
+        ]);
+
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'phone' => 'required|string',
