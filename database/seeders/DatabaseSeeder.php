@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        // Seed car models and accessories
         $this->call([
             CarModelSeeder::class,
             AccessorySeeder::class,
