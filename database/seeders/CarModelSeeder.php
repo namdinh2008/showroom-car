@@ -28,7 +28,7 @@ class CarModelSeeder extends Seeder
             [
                 'name' => 'Model Y',
                 'description' => 'Tesla Model Y - Versatile all-electric compact SUV',
-                'image_url' => 'https://i.pinimg.com/736x/4b/f0/ee/4bf0ee5d3cd36e6d726b33a8b28c3f2f.jpg',
+                'image_url' => 'https://i.pinimg.com/736x/ea/98/d6/ea98d6e41f0f50e922eb656cbb8d9306.jpg',
             ],
         ];
 
