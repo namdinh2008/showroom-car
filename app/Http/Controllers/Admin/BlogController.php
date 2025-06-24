@@ -33,7 +33,6 @@ class BlogController extends Controller
             'title' => 'required|string|min:3',
             'content' => 'required|string',
             'image_url' => 'nullable|url',
-            'is_published' => 'nullable|boolean',
         ]);
 
         $validated['admin_id'] = Auth::id();
@@ -42,7 +41,7 @@ class BlogController extends Controller
 
         Blog::create($validated);
 
-        return redirect('/admin/blogs')->with('success', 'Đăng bài viết thành công!');
+        return redirect()->route('admin.blogs.index')->with('success', 'Đăng bài viết thành công!');
     }
 
     public function edit($id)
@@ -59,7 +58,6 @@ class BlogController extends Controller
             'title' => 'required|string|min:3',
             'content' => 'required|string',
             'image_url' => 'nullable|url',
-            'is_published' => 'nullable|boolean',
         ]);
 
         $validated['is_published'] = $request->has('is_published');
@@ -67,12 +65,12 @@ class BlogController extends Controller
 
         $blog->update($validated);
 
-        return redirect('/admin/blogs')->with('success', 'Cập nhật bài viết thành công!');
+        return redirect()->route('admin.blogs.index')->with('success', 'Cập nhật bài viết thành công!');
     }
 
     public function destroy($id)
     {
         Blog::findOrFail($id)->delete();
-        return redirect('/admin/blogs')->with('success', 'Xóa bài viết thành công!');
+        return redirect()->route('admin.blogs.index')->with('success', 'Xóa bài viết thành công!');
     }
 }
