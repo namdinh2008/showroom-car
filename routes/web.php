@@ -131,5 +131,8 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
     });
 });
 
+// Trang chi tiết model xe
+Route::get('/car-models/{id}', [\App\Http\Controllers\User\CarModelController::class, 'show'])->name('car_models.show');
+
 // --- Auth routes ---
 require __DIR__.'/auth.php';

@@ -11,6 +11,9 @@ class Accessory extends Model
 
     protected $fillable = [
         'product_id',
+        'name',
+        'description',
+        'price',
     ];
 
     public function product()

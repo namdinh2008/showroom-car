@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Accessory;
+use App\Models\Product;
 
 class AccessorySeeder extends Seeder
 {
@@ -33,7 +34,19 @@ class AccessorySeeder extends Seeder
         ];
 
         foreach ($accessories as $item) {
-            Accessory::create($item);
+            $product = Product::create([
+                'name' => $item['name'],
+                'description' => $item['description'],
+                'price' => $item['price'],
+                'product_type' => 'accessory',
+                'is_active' => true,
+            ]);
+            Accessory::create([
+                'product_id' => $product->id,
+                'name' => $item['name'],
+                'description' => $item['description'],
+                'price' => $item['price'],
+            ]);
         }
     }
 }

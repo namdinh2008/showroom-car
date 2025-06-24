@@ -7,7 +7,6 @@
     {{-- ===== Hero/Banner Section (Tesla-inspired: Full-screen height, large imagery, minimalist text) ===== --}}
     <section class="relative h-screen flex items-end justify-center text-white overflow-hidden bg-black">
         {{-- Background Image/Video (Replace with actual car image/video) --}}
-        {{-- For a true Tesla feel, this would ideally be a large, high-res image or muted video --}}
         <img src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-Promotional-Carousel-Model-3-Desktop-US.png" alt="Tesla Model S" class="absolute inset-0 w-full h-full object-cover opacity-80" />
 
         {{-- Gradient Overlay (Optional, for better text readability) --}}
@@ -20,10 +19,13 @@
             <p class="text-xl md:text-2xl font-medium mb-8">
                 Tốc độ tối thượng. Tính an toàn vô song.
             </p>
+            {{-- Nút Khám phá ở banner có thể trỏ về model đầu tiên (nếu muốn) --}}
             <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="{{ route('admin.carmodels.index') }}" class="bg-white text-gray-900 font-bold px-10 py-3 rounded-md text-lg hover:bg-gray-100 transition-colors duration-300 transform hover:scale-105 shadow-lg">
-                    Khám phá
-                </a>
+                @if(isset($carModels[0]))
+                    <a href="{{ route('car_models.show', ['id' => $carModels[0]->id]) }}" class="bg-white text-gray-900 font-bold px-10 py-3 rounded-md text-lg hover:bg-gray-100 transition-colors duration-300 transform hover:scale-105 shadow-lg">
+                        Khám phá
+                    </a>
+                @endif
                 <a href="#" class="bg-gray-800 text-white font-bold px-10 py-3 rounded-md text-lg hover:bg-gray-700 transition-colors duration-300 transform hover:scale-105 shadow-lg">
                     Mua ngay
                 </a>
@@ -41,11 +43,12 @@
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 @foreach ($carModels as $model)
-                    <a href="#" class="block bg-gray-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 group">
+                    <a href="{{ route('car_models.show', ['id' => $model->id]) }}" class="block bg-gray-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 group">
                         <img src="{{ $model->image_url }}" alt="{{ $model->name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500 ease-out">
                         <div class="p-6 text-center">
                             <h3 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-red-600 transition-colors">{{ $model->name }}</h3>
                             <p class="text-gray-600 text-sm">Khám phá các phiên bản</p>
+                            <a href="{{ route('car_models.show', ['id' => $model->id]) }}" class="mt-4 inline-block bg-white text-gray-900 font-bold px-6 py-2 rounded-md text-base hover:bg-gray-100 transition-colors duration-300 transform hover:scale-105 shadow">Khám phá</a>
                         </div>
                     </a>
                 @endforeach
@@ -131,6 +134,7 @@
 @endsection
 
 {{-- Add custom CSS for subtle animations --}}
+@push('styles')
 <style>
     @keyframes fadeInBottom {
         from {
@@ -142,18 +146,13 @@
             transform: translateY(0);
         }
     }
-
-    /* Simple base animation applied to the main banner content */
     .animate-fade-in-up {
         animation: fadeInBottom 1s ease-out forwards;
-        animation-delay: 0.5s; /* Delay for better effect */
-        opacity: 0; /* Hide before animation starts */
+        animation-delay: 0.5s;
+        opacity: 0;
     }
-
-    /* You might define similar animations for other sections to appear on scroll if needed */
-
-    /* Placeholder for a Tesla-like banner image. In a real scenario, use high-quality, muted tones. */
     .bg-black {
-        background-color: #000; /* Fallback for banner */
+        background-color: #000;
     }
 </style>
+@endpush
