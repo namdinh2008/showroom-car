@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,17 +13,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::create([
+        User::create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
+            'phone' => '0123456789',
+            'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
 
-        \App\Models\User::create([
-            'name' => 'User Demo',
+        User::create([
+            'name' => 'User',
             'email' => 'user@example.com',
-            'password' => bcrypt('password'),
+            'phone' => '0987654321',
+            'password' => Hash::make('password'),
             'role' => 'user',
         ]);
 

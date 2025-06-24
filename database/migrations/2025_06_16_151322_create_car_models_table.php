@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('car_models', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('base_price', 12, 2);
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);

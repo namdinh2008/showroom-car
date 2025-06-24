@@ -7,15 +7,21 @@ use App\Http\Middleware\IsAdmin;
 // Admin Controllers
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CarModelController;
-use App\Http\Controllers\Admin\CarConfigurationOptionController;
-use App\Http\Controllers\Admin\CarOrderController;
-use App\Http\Controllers\Admin\AccessoryController;
+use App\Http\Controllers\Admin\CarVariantController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CartItemController;
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\WishlistController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AccessoryController;
 
-// --- Public ---
-Route::get('/', function () {
-    return view('welcome');
-});
+
+// Public Controllers
+use App\Http\Controllers\User\HomeController;
+
+// --- Trang chủ ---
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // --- Dashboard cho user ---
 Route::get('/dashboard', function () {
@@ -29,7 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// --- Admin routes thủ công ---
+// --- Admin routes ---
 Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -43,24 +49,45 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
         Route::delete('/delete/{carmodel}', [CarModelController::class, 'destroy'])->name('destroy');
     });
 
-    // Car Configuration Options
-    Route::prefix('car-options')->name('caroptions.')->group(function () {
-        Route::get('/', [CarConfigurationOptionController::class, 'index'])->name('index');
-        Route::get('/create', [CarConfigurationOptionController::class, 'create'])->name('create');
-        Route::post('/store', [CarConfigurationOptionController::class, 'store'])->name('store');
-        Route::get('/edit/{caroption}', [CarConfigurationOptionController::class, 'edit'])->name('edit');
-        Route::put('/update/{caroption}', [CarConfigurationOptionController::class, 'update'])->name('update');
-        Route::delete('/delete/{caroption}', [CarConfigurationOptionController::class, 'destroy'])->name('destroy');
+    // Car Variants
+    Route::prefix('carvariants')->name('carvariants.')->group(function () {
+        Route::get('/', [CarVariantController::class, 'index'])->name('index');
+        Route::get('/create', [CarVariantController::class, 'create'])->name('create');
+        Route::post('/store', [CarVariantController::class, 'store'])->name('store');
+        Route::get('/edit/{carvariant}', [CarVariantController::class, 'edit'])->name('edit');
+        Route::put('/update/{carvariant}', [CarVariantController::class, 'update'])->name('update');
+        Route::delete('/delete/{carvariant}', [CarVariantController::class, 'destroy'])->name('destroy');
     });
 
-    // Car Orders
-    Route::prefix('car-orders')->name('carorders.')->group(function () {
-        Route::get('/', [CarOrderController::class, 'index'])->name('index');
-        Route::get('/create', [CarOrderController::class, 'create'])->name('create');
-        Route::post('/store', [CarOrderController::class, 'store'])->name('store');
-        Route::get('/edit/{carorder}', [CarOrderController::class, 'edit'])->name('edit');
-        Route::put('/update/{carorder}', [CarOrderController::class, 'update'])->name('update');
-        Route::delete('/delete/{carorder}', [CarOrderController::class, 'destroy'])->name('destroy');
+    // Accessories
+    Route::prefix('admin/accessories')->name('admin.accessories.')->group(function () {
+    Route::get('/', [AccessoryController::class, 'index'])->name('index');
+    Route::get('/create', [AccessoryController::class, 'create'])->name('create');
+    Route::post('/', [AccessoryController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
+});
+
+    // Orders
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/create', [OrderController::class, 'create'])->name('create');
+        Route::post('/store', [OrderController::class, 'store'])->name('store');
+        Route::get('/edit/{order}', [OrderController::class, 'edit'])->name('edit');
+        Route::put('/update/{order}', [OrderController::class, 'update'])->name('update');
+        Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show');
+    });
+
+    // Products
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::get('/create', [ProductController::class, 'create'])->name('create');
+        Route::post('/store', [ProductController::class, 'store'])->name('store');
+        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
+        Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
+        Route::delete('/delete/{product}', [ProductController::class, 'destroy'])->name('destroy');
     });
 
     // Accessories
@@ -73,16 +100,36 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
         Route::delete('/delete/{accessory}', [AccessoryController::class, 'destroy'])->name('destroy');
     });
 
-    // Orders
-    Route::prefix('orders')->name('orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/create', [OrderController::class, 'create'])->name('create');
-        Route::post('/store', [OrderController::class, 'store'])->name('store');
-        Route::get('/edit/{order}', [OrderController::class, 'edit'])->name('edit');
-        Route::put('/update/{order}', [OrderController::class, 'update'])->name('update');
-        Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy');
+    // Cart Items
+    Route::prefix('cartitems')->name('cartitems.')->group(function () {
+        Route::get('/', [CartItemController::class, 'index'])->name('index');
+        Route::delete('/delete/{cartitem}', [CartItemController::class, 'destroy'])->name('destroy');
+    });
+
+    // Blogs
+    Route::prefix('blogs')->name('blogs.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index');
+        Route::get('/create', [BlogController::class, 'create'])->name('create');
+        Route::post('/store', [BlogController::class, 'store'])->name('store');
+        Route::get('/edit/{blog}', [BlogController::class, 'edit'])->name('edit');
+        Route::put('/update/{blog}', [BlogController::class, 'update'])->name('update');
+        Route::delete('/delete/{blog}', [BlogController::class, 'destroy'])->name('destroy');
+    });
+
+    // Wishlists
+    Route::prefix('wishlists')->name('wishlists.')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('index');
+        Route::delete('/delete/{wishlist}', [WishlistController::class, 'destroy'])->name('destroy');
+    });
+
+    // Users
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
+        Route::put('/update/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/delete/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 });
 
-// --- Auth ---
+// --- Auth routes ---
 require __DIR__.'/auth.php';
