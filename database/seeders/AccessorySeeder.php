@@ -1,0 +1,39 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Accessory;
+
+class AccessorySeeder extends Seeder
+{
+    public function run(): void
+    {
+        $accessories = [
+            [
+                'name' => 'Wall Connector',
+                'description' => 'Tesla Wall Connector for home charging',
+                'price' => 500,
+            ],
+            [
+                'name' => 'All-Weather Interior Mats',
+                'description' => 'Custom-fit mats for all Tesla models',
+                'price' => 250,
+            ],
+            [
+                'name' => 'Roof Rack',
+                'description' => 'Aerodynamic roof rack for Model 3/Y',
+                'price' => 400,
+            ],
+            [
+                'name' => 'Car Cover',
+                'description' => 'Outdoor car cover for Model S/X/3/Y',
+                'price' => 350,
+            ],
+        ];
+
+        foreach ($accessories as $item) {
+            Accessory::create($item);
+        }
+    }
+}

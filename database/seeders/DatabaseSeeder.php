@@ -26,5 +26,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'user',
         ]);
+
+        // Seed car models and accessories
+        $this->call([
+            CarModelSeeder::class,
+            AccessorySeeder::class,
+        ]);
     }
 }
