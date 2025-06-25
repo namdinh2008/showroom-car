@@ -31,24 +31,24 @@
                 </tr>
             </thead>
             <tbody class="text-gray-800">
-                @forelse ($accessories as $item)
+                @forelse ($accessories as $accessory)
                     <tr class="border-t hover:bg-gray-50">
-                        <td class="px-4 py-3 align-middle">{{ $item->id }}</td>
+                        <td class="px-4 py-3 align-middle">{{ $accessory->id }}</td>
                         <td class="px-4 py-3 align-middle">
-                            {{ optional($item->product)->name ?? '-' }}
+                            {{ optional($accessory->product)->name ?? '-' }}
                         </td>
                         <td class="px-4 py-3 align-middle">
-                            {{ optional($item->product)?->price ? number_format($item->product->price, 0, ',', '.') . ' đ' : 'N/A' }}
+                            {{ optional($accessory->product)?->price ? number_format($accessory->product->price, 0, ',', '.') . ' đ' : 'N/A' }}
                         </td>
                         <td class="px-4 py-3 align-middle">
-                            @if (!empty($item->product?->image_url))
-                                <img src="{{ $item->product->image_url }}" alt="Hình ảnh" class="w-16 h-16 object-cover rounded">
+                            @if (!empty($accessory->product?->image_url))
+                                <img src="{{ $accessory->product->image_url }}" alt="Hình ảnh" class="w-16 h-16 object-cover rounded">
                             @else
                                 <span class="text-gray-400 italic">Không có ảnh</span>
                             @endif
                         </td>
                         <td class="px-4 py-3 text-center align-middle">
-                            @if ($item->product?->is_active)
+                            @if ($accessory->product?->is_active)
                                 <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">Hiển thị</span>
                             @else
                                 <span class="inline-block px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded">Ẩn</span>
@@ -57,7 +57,7 @@
                         <td class="px-4 py-3 text-center align-middle">
                             <div class="flex justify-center gap-3">
                                 {{-- Nút sửa --}}
-                                <a href="{{ route('admin.accessories.edit', $item->id) }}">
+                                <a href="{{ route('admin.accessories.edit', $accessory->id) }}">
                                     <button type="button"
                                         class="px-4 py-1 text-sm font-medium bg-blue-500 text-white rounded-md hover:bg-blue-600 transition shadow">
                                         Sửa
@@ -65,7 +65,7 @@
                                 </a>
 
                                 {{-- Nút xoá --}}
-                                <form action="{{ route('admin.accessories.destroy', $item->id) }}" method="POST"
+                                <form action="{{ route('admin.accessories.destroy', $accessory->id) }}" method="POST"
                                       onsubmit="return confirm('Bạn có chắc chắn muốn xoá phụ kiện này?')">
                                     @csrf
                                     @method('DELETE')

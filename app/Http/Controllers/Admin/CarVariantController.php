@@ -45,7 +45,7 @@ class CarVariantController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'price' => 0,
-            'product_type' => 'car',
+            'product_type' => 'car_variant',
             'is_active' => $validated['is_active'],
         ]);
 
