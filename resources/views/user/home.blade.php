@@ -34,8 +34,6 @@
     </section>
 
     ---
-
-    {{-- ===== Car Categories (Clean, card-based, hover for subtle interaction) ===== --}}
     <section class="py-16 bg-white">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-12">
@@ -92,22 +90,43 @@
     ---
 
     {{-- ===== Accessories (Clean grid, clear pricing, subtle border, image focus) ===== --}}
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-white relative"> {{-- Added 'relative' for absolute positioning of nav buttons --}}
         <div class="container mx-auto px-6">
             <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-12">
                 Phụ kiện cao cấp
             </h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                @foreach ($accessories as $item)
-                    <a href="#" class="block border border-gray-200 rounded-lg p-6 text-center bg-white hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-                        <img src="{{ $item->image_url }}" class="h-36 object-contain mx-auto mb-4" alt="{{ $item->name }}">
-                        <h3 class="font-bold text-lg text-gray-800 mb-1 line-clamp-2">{{ $item->name }}</h3>
-                        <p class="text-red-600 text-xl font-semibold">{{ number_format($item->price) }} đ</p>
-                    </a>
-                @endforeach
+
+            {{-- Carousel Container --}}
+            <div id="accessories-carousel" class="relative overflow-hidden">
+                {{-- Carousel Items Wrapper --}}
+                <div class="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory hide-scroll-bar gap-4" id="carousel-items">
+                    @foreach ($accessories as $item)
+                        <div class="flex-shrink-0 w-[64vw] h-[80vh] snap-center px-0 overflow-hidden">
+                            <a href="#" class="block border border-gray-200 rounded-xl p-6 text-center shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between bg-center overflow-hidden" style="background-image: url('{{ $item->img_url }}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+                                <div class="flex-grow"></div>
+                                <h1 class="font-bold text-white text-4xl text-start">{{ $item->name }}</h1>
+                                <p class="text-white text-base inline-block mb-6 text-start">{{ $item->description }}</p>
+                                <p class="text-white text-2xl font-semibold bg-blue-700 rounded-md px-3 py-2 inline-block w-[200px]">Buy Now</p>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Navigation Buttons (Previous/Next) --}}
+                <button id="prev-slide" class="absolute top-1/2 left-4 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg opacity-70 hover:opacity-100 transition-opacity duration-300 hidden md:block">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button id="next-slide" class="absolute top-1/2 right-4 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg opacity-70 hover:opacity-100 transition-opacity duration-300 hidden md:block">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
             </div>
+            <div id="carousel-dots" class="absolute left-0 right-0 flex justify-center space-x-2 mt-4">
+                    {{-- Dots will be dynamically added by JavaScript --}}
+                </div>
         </div>
     </section>
+
 
     ---
 
@@ -153,6 +172,32 @@
     }
     .bg-black {
         background-color: #000;
+    }
+
+    .hide-scroll-bar::-webkit-scrollbar {
+        display: none;
+    }
+    /* For IE, Edge and Firefox */
+    .hide-scroll-bar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
+    /* Simple fade-in animations for other sections if you want consistent effects */
+    @keyframes fadeInBottom {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in-up {
+        animation: fadeInBottom 1s ease-out forwards;
+        animation-delay: 0.5s;
+        opacity: 0;
     }
 </style>
 @endpush
