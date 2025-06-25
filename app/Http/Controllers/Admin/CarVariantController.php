@@ -36,15 +36,15 @@ class CarVariantController extends Controller
             'name' => 'required|min:3',
             'description' => 'nullable|string',
             'features' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
 
-        // Tạo product tương ứng
         $product = Product::create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'price' => 0,
+            'price' => $validated['price'],
             'product_type' => 'car_variant',
             'is_active' => $validated['is_active'],
         ]);
@@ -63,31 +63,32 @@ class CarVariantController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $variant = CarVariant::findOrFail($id);
+{
+    $variant = CarVariant::findOrFail($id);
 
-        $validated = $request->validate([
-            'car_model_id' => 'required|exists:car_models,id',
-            'name' => 'required|min:3',
-            'description' => 'nullable|string',
-            'features' => 'nullable|string',
+    $validated = $request->validate([
+        'car_model_id' => 'required|exists:car_models,id',
+        'name' => 'required|min:3',
+        'description' => 'nullable|string',
+        'features' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+    ]);
+
+    $validated['is_active'] = $request->has('is_active');
+
+    $product = $variant->product;
+    if ($product) {
+        $product->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'is_active' => $validated['is_active'],
         ]);
-
-        $validated['is_active'] = $request->has('is_active');
-
-        // Cập nhật product
-        $product = $variant->product;
-        if ($product) {
-            $product->update([
-                'name' => $validated['name'],
-                'description' => $validated['description'],
-                'is_active' => $validated['is_active'],
-            ]);
-        }
-
-        $variant->update($validated);
-        return redirect()->route('admin.carvariants.index')->with('success', 'Cập nhật phiên bản xe thành công!');
     }
+
+    $variant->update($validated);
+    return redirect()->route('admin.carvariants.index')->with('success', 'Cập nhật phiên bản xe thành công!');
+}
 
     public function destroy($id)
     {

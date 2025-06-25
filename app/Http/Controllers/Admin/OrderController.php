@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -15,12 +14,26 @@ class OrderController extends Controller
     {
         $query = Order::with('user');
 
-        if ($request->has('status')) {
+        if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
         $orders = $query->orderByDesc('created_at')->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+
+        return view('admin.orders.index', [
+            'orders' => $orders,
+            'search' => $request->search,
+            'status' => $request->status,
+        ]);
     }
 
     public function show($id)

@@ -4,14 +4,25 @@
 
 @section('content')
 <div class="bg-white p-6 rounded shadow mx-6 my-6">
-    {{-- Tiêu đề --}}
-    <div class="flex justify-between items-center mb-6">
+    {{-- Tiêu đề + Form tìm kiếm --}}
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
             🚙 DANH SÁCH PHIÊN BẢN XE
         </h1>
+
+        {{-- Form tìm kiếm --}}
+        <form method="GET" action="{{ route('admin.carvariants.index') }}" class="flex gap-2">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm phiên bản xe..."
+                   class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button type="submit"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition font-semibold">
+                Tìm
+            </button>
+        </form>
+
         <a href="{{ route('admin.carvariants.create') }}">
             <button type="button"
-                class="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 font-semibold rounded-md shadow hover:bg-indigo-700 transition text-white">
+                class="inline-flex items-center gap-2 px-5 py-2 bg-green-600 font-semibold rounded-md shadow hover:bg-green-700 transition text-white">
                 Thêm mới
             </button>
         </a>
@@ -25,7 +36,7 @@
                     <th class="px-4 py-3 border-b">#</th>
                     <th class="px-4 py-3 border-b">Tên phiên bản</th>
                     <th class="px-4 py-3 border-b">Mẫu xe</th>
-                    <th class="px-4 py-3 border-b text-right">Giá gốc</th>
+                    <th class="px-4 py-3 border-b text-right">Giá</th>
                     <th class="px-4 py-3 border-b text-center">Trạng thái</th>
                     <th class="px-4 py-3 border-b text-center w-60">Hành động</th>
                 </tr>
@@ -36,7 +47,9 @@
                         <td class="px-4 py-3 align-middle">{{ $variant->id }}</td>
                         <td class="px-4 py-3 align-middle truncate max-w-xs">{{ $variant->name }}</td>
                         <td class="px-4 py-3 align-middle">{{ $variant->carModel->name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-right align-middle">${{ number_format($variant->base_price, 0, '.', ',') }}</td>
+                        <td class="px-4 py-3 text-right align-middle">
+                            {{ $variant->product?->price ? number_format($variant->product->price, 0, ',', '.') . ' đ' : 'N/A' }}
+                        </td>
                         <td class="px-4 py-3 text-center align-middle">
                             @if ($variant->is_active)
                                 <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">Hiển thị</span>
@@ -74,6 +87,11 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    {{-- Phân trang --}}
+    <div class="mt-4">
+        {{ $variants->appends(['search' => request('search')])->links() }}
     </div>
 </div>
 @endsection
