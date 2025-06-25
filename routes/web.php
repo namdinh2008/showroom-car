@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\AccessoryController;
 
 // Public Controllers
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\CartController;
 
 // --- Trang chủ ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -34,6 +35,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Cart
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index'); // Xem giỏ hàng
+    Route::post('/add', [CartController::class, 'add'])->name('add'); // Thêm vào giỏ
+    Route::post('/update/{cartItem}', [CartController::class, 'update'])->name('update'); // Cập nhật số lượng
+    Route::delete('/remove/{cartItem}', [CartController::class, 'remove'])->name('remove'); // Xóa khỏi giỏ
+});
+
+// --- Cart routes ---
+Route::get('/cart/checkout', [CartController::class, 'showCheckoutForm'])->name('cart.checkout.form');
+Route::post('/cart/checkout', [CartController::class, 'processCheckout'])->name('cart.checkout');
 
 // --- Admin routes ---
 Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
@@ -61,13 +74,13 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 
     // Accessories
     Route::prefix('admin/accessories')->name('admin.accessories.')->group(function () {
-    Route::get('/', [AccessoryController::class, 'index'])->name('index');
-    Route::get('/create', [AccessoryController::class, 'create'])->name('create');
-    Route::post('/', [AccessoryController::class, 'store'])->name('store');
-    Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
-});
+        Route::get('/', [AccessoryController::class, 'index'])->name('index');
+        Route::get('/create', [AccessoryController::class, 'create'])->name('create');
+        Route::post('/', [AccessoryController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
+    });
 
     // Orders
     Route::prefix('orders')->name('orders.')->group(function () {
@@ -135,4 +148,4 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 Route::get('/car-models/{id}', [\App\Http\Controllers\User\CarModelController::class, 'show'])->name('car_models.show');
 
 // --- Auth routes ---
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
