@@ -39,30 +39,26 @@
 
     <!-- Features Section -->
     <section class="max-w-7xl mx-auto px-6 py-16" id="learn">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             @foreach($variants as $variant)
-            <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
+            <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition flex flex-col items-center">
                 <h3 class="text-xl font-semibold mb-2">{{ $variant->name }}</h3>
-                <ul class="list-disc list-inside text-gray-700 text-base mb-2">
+                <ul class="list-disc list-inside text-gray-700 text-base mb-2 text-left mx-auto" style="max-width:220px;">
                     @foreach(json_decode($variant->features, true) as $key => $value)
-                        <li>{{ $key }}: {{ $value }}</li>
+                    <li>{{ $key }}: {{ $value }}</li>
                     @endforeach
                 </ul>
-                <p class="font-bold text-red-600">Giá: {{ number_format($variant->product->price ?? 0) }} đ</p>
+                <p class="font-bold text-red-600 mb-4">Giá: {{ number_format($variant->product->price ?? 0) }} đ</p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    @foreach($variant->colors as $color)
+                    <div class="flex flex-col items-center">
+                        <img src="{{ $color->image_url }}" alt="{{ $color->color_name }}" class="w-10 h-10 rounded-full border-2 border-gray-300" />
+                        <span class="mt-1 text-xs">{{ $color->color_name }}</span>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             @endforeach
-        </div>
-        <!-- Màu sắc -->
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold mb-4">Màu sắc</h2>
-            <div class="flex flex-wrap gap-4">
-                @foreach($variants->first()->colors as $color)
-                <div class="flex flex-col items-center">
-                    <img src="{{ $color->image_url }}" alt="{{ $color->color_name }}" class="w-14 h-14 rounded-full border-2 border-gray-300" />
-                    <span class="mt-2 text-sm">{{ $color->color_name }}</span>
-                </div>
-                @endforeach
-            </div>
         </div>
     </section>
 
@@ -83,35 +79,49 @@
         <h2 class="text-3xl font-extrabold text-center mb-8">Đặt hàng {{ $carModel->name }}</h2>
         <form action="#" class="space-y-8" method="POST" novalidate>
             @csrf
+            <!-- Họ tên và SĐT trên cùng 1 hàng, Email 1 hàng riêng -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2" for="fullName">Họ tên</label>
-                    <input class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black" id="fullName" name="fullName" placeholder="Nguyễn Văn A" required type="text" />
+                    <input class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black"
+                        id="fullName" name="fullName" placeholder="Nguyễn Văn A" required type="text" />
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="email">Email</label>
-                    <input class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black" id="email" name="email" placeholder="email@example.com" required type="email" />
+                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="phone">Số điện thoại</label>
+                    <input class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black"
+                        id="phone" name="phone" placeholder="0123456789" required type="tel" />
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" for="variant">Chọn phiên bản</label>
-                <select class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black" id="variant" name="variant" required>
-                    @foreach($variants as $variant)
-                        <option value="{{ $variant->id }}">{{ $variant->name }}</option>
-                    @endforeach
-                </select>
+                <label class="block text-sm font-semibold text-gray-700 mb-2" for="email">Email</label>
+                <input class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black"
+                    id="email" name="email" placeholder="email@example.com" required type="email" />
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2" for="color">Chọn màu</label>
-                <select class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black" id="color" name="color" required>
-                    @foreach($variants->first()->colors as $color)
-                        <option value="{{ $color->id }}">{{ $color->color_name }}</option>
-                    @endforeach
-                </select>
+            <!-- Chọn phiên bản và màu trên cùng 1 hàng -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="variant">Chọn phiên bản</label>
+                    <select class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black"
+                        id="variant" name="variant" required>
+                        <option value="">-- Chọn phiên bản --</option>
+                        @foreach($variants as $variant)
+                        <option value="{{ $variant->id }}" data-colors='@json($variant->colors)'>{{ $variant->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="color">Chọn màu</label>
+                    <select class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black"
+                        id="color" name="color" required>
+                        <option value="">-- Chọn màu --</option>
+                        {{-- JS sẽ render các option màu ở đây --}}
+                    </select>
+                </div>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2" for="additionalNotes">Ghi chú thêm</label>
-                <textarea class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black resize-none" id="additionalNotes" name="additionalNotes" placeholder="Yêu cầu đặc biệt hoặc câu hỏi?" rows="4"></textarea>
+                <textarea class="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-black resize-none"
+                    id="additionalNotes" name="additionalNotes" placeholder="Yêu cầu đặc biệt hoặc câu hỏi?" rows="4"></textarea>
             </div>
             <div class="text-center">
                 <button class="rounded bg-black px-10 py-3 text-white font-semibold text-lg hover:bg-gray-900 transition" type="submit">

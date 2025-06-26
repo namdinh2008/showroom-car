@@ -17,7 +17,7 @@ class HomeController extends Controller
         $accessories = Accessory::with('product')->where('is_active', 1)->take(4)->get();
         $blogs = Blog::latest()->take(4)->get();
 
-        $featuredCars = CarVariant::with('product')->where('is_active', 1)->take(4)->get();
+        $featuredCars = CarVariant::with('product','colors')->where('is_active', 1)->take(4)->get();
 
         return view('user.home', compact('carModels', 'accessories', 'blogs', 'featuredCars'));
     }

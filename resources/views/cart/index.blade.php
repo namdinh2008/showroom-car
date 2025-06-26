@@ -34,7 +34,7 @@
                                 {{ $item->product->name }}
                             </td>
                             <td class="py-3 px-4 text-gray-700">
-                                {{ $item->color?->name ?? '-' }}
+                                {{ $item->color?->color_name ?? '-' }}
                             </td>
                             <td class="py-3 px-4 text-right text-indigo-700 font-bold">
                                 {{ number_format($item->product->price) }} đ

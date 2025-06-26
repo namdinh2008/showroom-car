@@ -60,18 +60,18 @@
                 @guest
                 <a class="hover:text-gray-700 transition" href="{{ route('login') }}">Account</a>
                 @else
-                <div class="relative group" tabindex="0">
-                    <button class="hover:text-gray-700 transition flex items-center focus:outline-none">
+                <div class="relative" id="desktop-profile-dropdown-wrapper">
+                    <button id="desktop-profile-dropdown-btn" class="hover:text-gray-700 transition flex items-center focus:outline-none">
                         <span class="truncate max-w-[100px]">{{ Auth::user()->name }}</span>
                         <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
-                    <div class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg py-2 z-50 hidden group-hover:block group-focus-within:block">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                    <div id="desktop-profile-dropdown-menu" class="absolute right-0 mt-2 min-w-max bg-white border rounded shadow-lg z-50 hidden text-right">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-right whitespace-nowrap">Profile</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Log out</button>
+                            <button type="submit" class="w-full text-right px-4 py-2 text-gray-700 hover:bg-gray-100 whitespace-nowrap">Log out</button>
                         </form>
                     </div>
                 </div>
@@ -182,5 +182,22 @@
         });
     </script>
 </body>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('desktop-profile-dropdown-btn');
+        const menu = document.getElementById('desktop-profile-dropdown-menu');
+        const wrapper = document.getElementById('desktop-profile-dropdown-wrapper');
+        if (btn && menu && wrapper) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+            document.addEventListener('click', function (e) {
+                if (!wrapper.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        }
+    });
+</script>
 </html>

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\AccessoryController;
 // Public Controllers
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\UserOrderController;
 
 // --- Trang chủ ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/order', [UserOrderController::class, 'store'])->name('order.store');
 
 // Cart
 Route::prefix('cart')->name('cart.')->group(function () {

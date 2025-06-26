@@ -62,6 +62,7 @@
         <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-12 tracking-tight">Sản phẩm nổi bật</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             @foreach ($featuredCars as $car)
+            @php $firstColor = $car->colors->first(); @endphp
             <div class="relative bg-white rounded-2xl shadow hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden group border border-gray-100">
                 <img src="{{ $car->image_url }}" class="w-full h-52 object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" alt="{{ $car->name }}">
                 <!-- Badge tên xe -->
@@ -71,8 +72,9 @@
                 <!-- Nút thêm vào giỏ hàng ở góc phải trên ảnh -->
                 <form action="{{ route('cart.add') }}" method="POST" class="absolute top-3 right-3 z-20">
                     @csrf
-                    <input type="hidden" name="product_id" value="{{ $car->id }}">
+                    <input type="hidden" name="product_id" value="{{ $car->product_id  }}">
                     <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="color_id" value="{{ $firstColor ? $firstColor->id : '' }}">
                     <button type="submit" class="bg-indigo-700 text-white font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-800 transition-colors duration-300 shadow flex items-center">
                         <i class="fas fa-cart-plus"></i>
                     </button>
@@ -83,6 +85,7 @@
                         <span class="text-red-600 font-bold text-lg">
                             {{ number_format($car->product->price) }} <span class="text-base">đ</span>
                         </span>
+                        <span>{{ $firstColor->color_name }}</span>
                         <span class="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full border border-green-200">
                             Còn hàng
                         </span>
@@ -109,6 +112,7 @@
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $item->product->id }}">
                     <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="color_id" value="">
                     <button type="submit" class="bg-indigo-700 text-white px-3 py-1.5 rounded-full text-sm hover:bg-indigo-800 transition-colors duration-300 shadow flex items-center">
                         <i class="fas fa-cart-plus"></i>
                     </button>
