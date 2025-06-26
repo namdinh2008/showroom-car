@@ -34,8 +34,6 @@
     </section>
 
     ---
-
-    {{-- ===== Car Categories (Clean, card-based, hover for subtle interaction) ===== --}}
     <section class="py-16 bg-white">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-12">
@@ -128,6 +126,7 @@
                 </div>
         </div>
     </section>
+
 
     ---
 
