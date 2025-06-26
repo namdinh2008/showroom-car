@@ -111,6 +111,77 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const carouselItemsContainer = document.getElementById('carousel-items');
+        const prevButton = document.getElementById('prev-slide');
+        const nextButton = document.getElementById('next-slide');
+        const carouselDotsContainer = document.getElementById('carousel-dots');
+
+        if (!carouselItemsContainer || !prevButton || !nextButton || !carouselDotsContainer) {
+            console.warn("Carousel elements not found. Carousel functionality will not work.");
+            return;
+        }
+
+        const items = Array.from(carouselItemsContainer.children);
+        let currentIndex = 0;
+
+        // Function to update active dot
+        const updateDots = () => {
+            carouselDotsContainer.innerHTML = ''; // Clear existing dots
+            items.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.classList.add('w-3', 'h-3', 'rounded-full', 'bg-gray-400', 'hover:bg-gray-600', 'transition-colors', 'duration-300');
+                if (index === currentIndex) {
+                    dot.classList.remove('bg-gray-400');
+                    dot.classList.add('bg-gray-800'); // Active dot color
+                }
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    scrollToCurrentItem();
+                });
+                carouselDotsContainer.appendChild(dot);
+            });
+        };
+
+        // Function to scroll to the current item
+        const scrollToCurrentItem = () => {
+            const itemWidth = carouselItemsContainer.firstElementChild ? carouselItemsContainer.firstElementChild.offsetWidth + (parseInt(getComputedStyle(carouselItemsContainer.firstElementChild).marginRight) || 0) + (parseInt(getComputedStyle(carouselItemsContainer.firstElementChild).paddingLeft) || 0)*2 : 0; // Approximate item width + gap
+            carouselItemsContainer.scrollLeft = currentIndex * itemWidth;
+            updateDots();
+        };
+        
+        // Initial setup
+        updateDots();
+
+
+        // Previous Slide Button
+        prevButton.addEventListener('click', () => {
+            currentIndex = Math.max(0, currentIndex - 1);
+            scrollToCurrentItem();
+        });
+
+        // Next Slide Button
+        nextButton.addEventListener('click', () => {
+            currentIndex = Math.min(items.length - 1, currentIndex + 1);
+            scrollToCurrentItem();
+        });
+
+        // Optional: Update current index when user scrolls manually (more complex for precise item detection)
+        // For simplicity, we'll just update dots based on scroll position.
+        carouselItemsContainer.addEventListener('scroll', () => {
+            const scrollPosition = carouselItemsContainer.scrollLeft;
+            const itemWidth = carouselItemsContainer.firstElementChild ? carouselItemsContainer.firstElementChild.offsetWidth + (parseInt(getComputedStyle(carouselItemsContainer.firstElementChild).marginRight) || 0) + (parseInt(getComputedStyle(carouselItemsContainer.firstElementChild).paddingLeft) || 0)*2 : 0;
+            const newIndex = Math.round(scrollPosition / itemWidth);
+            if (newIndex !== currentIndex) {
+                currentIndex = newIndex;
+                updateDots();
+            }
+        });
+
+        // Adjust scroll on resize
+        window.addEventListener('resize', scrollToCurrentItem);
+    });
     </script>
 </body>
 </html>
