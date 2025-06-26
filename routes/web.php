@@ -61,13 +61,13 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 
     // Accessories
     Route::prefix('admin/accessories')->name('admin.accessories.')->group(function () {
-    Route::get('/', [AccessoryController::class, 'index'])->name('index');
-    Route::get('/create', [AccessoryController::class, 'create'])->name('create');
-    Route::post('/', [AccessoryController::class, 'store'])->name('store');
-    Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
-});
+        Route::get('/', [AccessoryController::class, 'index'])->name('index');
+        Route::get('/create', [AccessoryController::class, 'create'])->name('create');
+        Route::post('/', [AccessoryController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AccessoryController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AccessoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AccessoryController::class, 'destroy'])->name('destroy');
+    });
 
     // Orders
     Route::prefix('orders')->name('orders.')->group(function () {
@@ -135,4 +135,4 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
 Route::get('/car-models/{id}', [\App\Http\Controllers\User\CarModelController::class, 'show'])->name('car_models.show');
 
 // --- Auth routes ---
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

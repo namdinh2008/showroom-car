@@ -24,10 +24,9 @@
             </a>
             <nav class="hidden md:flex space-x-8 font-semibold text-sm">
                 <a class="hover:text-gray-700 transition" href="/">Home</a>
-                <a class="hover:text-gray-700 transition" href="#">Model S</a>
-                <a class="hover:text-gray-700 transition" href="#">Model 3</a>
-                <a class="hover:text-gray-700 transition" href="#">Model X</a>
-                <a class="hover:text-gray-700 transition" href="#">Model Y</a>
+                <a class="hover:text-gray-700 transition" href="#">Car</a>
+                <a class="hover:text-gray-700 transition" href="#">Accessories</a>
+                <a class="hover:text-gray-700 transition" href="#">Blog</a>
             </nav>
             <div class="hidden md:flex space-x-6 font-semibold text-sm">
                 @guest
@@ -39,7 +38,6 @@
                         <button type="submit" class="hover:text-gray-700 transition bg-transparent border-none p-0 m-0">Logout</button>
                     </form>
                 @endguest
-                <a class="hover:text-gray-700 transition" href="#">Shop</a>
             </div>
             <button aria-label="Open menu" class="md:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-700" id="menu-btn">
                 <i class="fas fa-bars text-xl"></i>
