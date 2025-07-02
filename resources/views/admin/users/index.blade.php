@@ -3,54 +3,50 @@
 @section('title', 'Danh sách người dùng')
 
 @section('content')
-    <div class="bg-white p-6 rounded shadow mx-6 my-6">
-        {{-- Tiêu đề --}}
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                👤 DANH SÁCH NGƯỜI DÙNG
-            </h1>
-        </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Danh sách người dùng
+        </h6>
+    </div>
 
-        {{-- Bảng dữ liệu --}}
-        <div class="overflow-x-auto">
-            <table class="min-w-full w-full border border-gray-200 text-sm text-left rounded-md shadow-sm">
-                <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="thead-light text-center">
                     <tr>
-                        <th class="px-4 py-3 border-b">#</th>
-                        <th class="px-4 py-3 border-b">Tên</th>
-                        <th class="px-4 py-3 border-b">Email</th>
-                        <th class="px-4 py-3 border-b">Số điện thoại</th>
-                        <th class="px-4 py-3 border-b text-center">Quyền</th>
-                        <th class="px-4 py-3 border-b text-center">Ngày tạo</th>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Quyền</th>
+                        <th>Ngày tạo</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-800">
+                <tbody>
                     @forelse ($users as $user)
-                        <tr class="border-t hover:bg-gray-50">
-                            <td class="px-4 py-3 align-middle">{{ $user->id }}</td>
-                            <td class="px-4 py-3 align-middle">{{ $user->name }}</td>
-                            <td class="px-4 py-3 align-middle">{{ $user->email ?? '-' }}</td>
-                            <td class="px-4 py-3 align-middle">{{ $user->phone ?? '-' }}</td>
-                            <td class="px-4 py-3 text-center align-middle">
+                        <tr>
+                            <td class="text-center">{{ $user->id }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email ?? '-' }}</td>
+                            <td>{{ $user->phone ?? '-' }}</td>
+                            <td class="text-center">
                                 @if ($user->role === 'admin')
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-semibold bg-indigo-100 text-indigo-700 rounded">Admin</span>
+                                    <span class="badge badge-primary">Admin</span>
                                 @else
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded">User</span>
+                                    <span class="badge badge-secondary">User</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-center align-middle">
-                                {{ $user->created_at->format('d/m/Y H:i') }}
-                            </td>
+                            <td class="text-center">{{ $user->created_at->format('d/m/Y H:i') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-4 text-center text-gray-500">Không có người dùng nào.</td>
+                            <td colspan="6" class="text-center text-muted">Không có người dùng nào.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
+</div>
 @endsection

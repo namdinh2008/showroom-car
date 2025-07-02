@@ -10,31 +10,20 @@ class CarVariant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
         'car_model_id',
         'name',
         'description',
         'features',
+        'price',
         'is_active',
     ];
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
 
     public function carModel()
     {
         return $this->belongsTo(CarModel::class);
     }
-
-    public function images()
+    public function product()
     {
-        return $this->hasMany(CarVariantImage::class);
-    }
-
-    public function colors()
-    {
-        return $this->hasMany(CarVariantColor::class);
+        return $this->hasOne(Product::class, 'reference_id')->where('product_type', 'car_variant');
     }
 }

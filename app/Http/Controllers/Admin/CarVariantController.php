@@ -12,15 +12,17 @@ class CarVariantController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $query = CarVariant::with('carModel');
+        $query = CarVariant::with(['carModel', 'product']);
 
-        if ($search) {
-            $query->where('name', 'like', "%$search%");
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhereHas('carModel', fn($q) => $q->where('name', 'like', "%{$search}%"));
         }
 
-        $variants = $query->paginate(10);
-        return view('admin.carvariants.index', compact('variants', 'search'));
+        $carVariants = $query->orderByDesc('created_at')->paginate(10);
+
+        return view('admin.carvariants.index', compact('carVariants'));
     }
 
     public function create()
@@ -33,73 +35,90 @@ class CarVariantController extends Controller
     {
         $validated = $request->validate([
             'car_model_id' => 'required|exists:car_models,id',
-            'name' => 'required|min:3',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'features' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'is_active' => 'sometimes|boolean',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
 
-        $product = Product::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'price' => $validated['price'],
-            'product_type' => 'car_variant',
-            'is_active' => $validated['is_active'],
-        ]);
-
-        $validated['product_id'] = $product->id;
-
-        CarVariant::create($validated);
-        return redirect()->route('admin.carvariants.index')->with('success', 'Thêm phiên bản xe thành công!');
-    }
-
-    public function edit($id)
-    {
-        $variant = CarVariant::findOrFail($id);
-        $carModels = CarModel::all();
-        return view('admin.carvariants.edit', compact('variant', 'carModels'));
-    }
-
-    public function update(Request $request, $id)
-{
-    $variant = CarVariant::findOrFail($id);
-
-    $validated = $request->validate([
-        'car_model_id' => 'required|exists:car_models,id',
-        'name' => 'required|min:3',
-        'description' => 'nullable|string',
-        'features' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-    ]);
-
-    $validated['is_active'] = $request->has('is_active');
-
-    $product = $variant->product;
-    if ($product) {
-        $product->update([
+        // Tạo CarVariant
+        $carVariant = CarVariant::create([
+            'car_model_id' => $validated['car_model_id'],
             'name' => $validated['name'],
             'description' => $validated['description'],
-            'price' => $validated['price'],
+            'features' => $validated['features'],
             'is_active' => $validated['is_active'],
         ]);
+
+        // Tạo bản ghi product tương ứng
+        Product::create([
+            'name' => $carVariant->name,
+            'description' => $carVariant->description,
+            'price' => $validated['price'],
+            'product_type' => 'car_variant',
+            'reference_id' => $carVariant->id,
+            'is_active' => $carVariant->is_active,
+            'image_url' => null,
+        ]);
+
+
+        return redirect()->route('admin.carvariants.index')->with('success', 'Đã thêm phiên bản xe thành công.');
     }
 
-    $variant->update($validated);
-    return redirect()->route('admin.carvariants.index')->with('success', 'Cập nhật phiên bản xe thành công!');
-}
-
-    public function destroy($id)
+    public function edit(CarVariant $carvariant)
     {
-        $variant = CarVariant::findOrFail($id);
+        $carModels = CarModel::all();
+        return view('admin.carvariants.edit', compact('carvariant', 'carModels'));
+    }
 
-        $product = $variant->product;
+    public function update(Request $request, CarVariant $carvariant)
+    {
+        $validated = $request->validate([
+            'car_model_id' => 'required|exists:car_models,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'features' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'is_active' => 'sometimes|boolean',
+        ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
+
+        // Cập nhật CarVariant
+        $carvariant->update([
+            'car_model_id' => $validated['car_model_id'],
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'features' => $validated['features'],
+            'is_active' => $validated['is_active'],
+        ]);
+
+        // Cập nhật Product tương ứng
+        $product = $carvariant->product;
         if ($product) {
-            $product->delete();
+            $product->update([
+                'name' => $carvariant->name,
+                'description' => $carvariant->description,
+                'price' => $validated['price'],
+                'is_active' => $validated['is_active'],
+            ]);
         }
 
-        $variant->delete();
-        return redirect()->route('admin.carvariants.index')->with('success', 'Đã xóa phiên bản xe!');
+        return redirect()->route('admin.carvariants.index')->with('success', 'Cập nhật phiên bản xe thành công.');
+    }
+
+    public function destroy(CarVariant $carvariant)
+    {
+        // Xoá bản ghi product liên quan
+        if ($carvariant->product) {
+            $carvariant->product->delete();
+        }
+
+        $carvariant->delete();
+
+        return redirect()->route('admin.carvariants.index')->with('success', 'Đã xoá phiên bản xe thành công.');
     }
 }

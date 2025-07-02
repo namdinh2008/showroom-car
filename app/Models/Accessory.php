@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Accessory extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'product_id',
+        'name',
+        'description',
+        'price',
+        'image_path',
+        'is_active',
     ];
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class);
     }
 }

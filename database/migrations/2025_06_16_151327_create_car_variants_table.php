@@ -9,11 +9,11 @@ return new class extends Migration {
     {
         Schema::create('car_variants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('car_model_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->text('features')->nullable();
+            $table->decimal('price', 12, 2)->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

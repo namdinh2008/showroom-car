@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Car;
 use App\Models\CarModel;
 use App\Models\CarVariant;
 use App\Models\Accessory;
@@ -23,6 +24,7 @@ class DashboardController extends Controller
         $totalCarModels    = CarModel::count();
         $totalCarVariants  = CarVariant::count();
         $totalBlogs        = Blog::count();
+        $totalCars         = Car::count();
 
         return view('admin.dashboard.index', compact(
             'totalProducts',
@@ -31,7 +33,8 @@ class DashboardController extends Controller
             'totalAccessories',
             'totalCarModels',
             'totalCarVariants',
-            'totalBlogs'
+            'totalBlogs',
+            'totalCars'
         ));
     }
 }

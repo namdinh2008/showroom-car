@@ -1,51 +1,90 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Dashboard')
+
 @section('content')
-<div class="px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">👋 Chào mừng, <span class="text-blue-600">Admin</span></h1>
-    <p class="mb-6 text-gray-600">Đây là bảng điều khiển của hệ thống showroom.</p>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">👋 Chào mừng, Admin</h1>
+</div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {{-- Sản phẩm --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Sản phẩm</h2>
-            <p class="text-2xl font-bold text-indigo-600">{{ $totalProducts }}</p>
+<div class="row">
+    {{-- Tổng sản phẩm --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng sản phẩm</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalProducts }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Đơn hàng --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Đơn hàng</h2>
-            <p class="text-2xl font-bold text-green-600">{{ $totalOrders }}</p>
+    {{-- Tổng đơn hàng --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tổng đơn hàng</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalOrders }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Người dùng --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Người dùng</h2>
-            <p class="text-2xl font-bold text-orange-600">{{ $totalUsers }}</p>
+    {{-- Tổng người dùng --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Tổng người dùng</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Phụ kiện --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Phụ kiện</h2>
-            <p class="text-2xl font-bold text-pink-600">{{ $totalAccessories }}</p>
+    {{-- Tổng phụ kiện --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tổng phụ kiện</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAccessories }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Mẫu xe --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Mẫu xe</h2>
-            <p class="text-2xl font-bold text-blue-500">{{ $totalCarModels }}</p>
+    {{-- Tổng hãng xe (cars) --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Tổng hãng xe</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalCars }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Phiên bản xe --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Phiên bản xe</h2>
-            <p class="text-2xl font-bold text-purple-600">{{ $totalCarVariants }}</p>
+    {{-- Tổng mẫu xe --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tổng mẫu xe</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalCarModels }}</div>
+            </div>
         </div>
+    </div>
 
-        {{-- Blog --}}
-        <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-gray-500 text-sm">Bài viết blog</h2>
-            <p class="text-2xl font-bold text-yellow-500">{{ $totalBlogs }}</p>
+    {{-- Tổng phiên bản xe --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-dark shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Tổng phiên bản xe</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalCarVariants }}</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tổng bài viết blog --}}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Bài viết Blog</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBlogs }}</div>
+            </div>
         </div>
     </div>
 </div>

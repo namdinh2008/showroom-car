@@ -3,80 +3,79 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CarModel;
 use Illuminate\Http\Request;
+use App\Models\CarModel;
+use App\Models\Car;
 
 class CarModelController extends Controller
 {
-    // Danh sách mẫu xe với tìm kiếm
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $query = CarModel::query();
+        $query = CarModel::with('car');
 
-        if ($search) {
-            $query->where('name', 'like', "%{$search}%");
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', '%' . $search . '%');
         }
 
-        $carModels = $query->orderBy('created_at', 'desc')->paginate(10);
+        $carModels = $query->latest()->paginate(10);
 
-        return view('admin.carmodels.index', compact('carModels', 'search'));
+        return view('admin.carmodels.index', compact('carModels'));
     }
 
-    // Hiển thị form thêm mẫu xe
     public function create()
     {
-        return view('admin.carmodels.create');
+        $cars = Car::all();
+        return view('admin.carmodels.create', compact('cars'));
     }
 
-    // Lưu mẫu xe mới
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:3',
+        $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-
-        CarModel::create($validated);
+        CarModel::create([
+            'car_id' => $request->car_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'is_active' => $request->boolean('is_active'),
+        ]);
 
         return redirect()->route('admin.carmodels.index')->with('success', 'Thêm mẫu xe thành công!');
     }
 
-    // Form chỉnh sửa
-    public function edit($id)
+    public function edit(CarModel $carmodel)
     {
-        $carModel = CarModel::findOrFail($id);
-
-        return view('admin.carmodels.edit', compact('carModel'));
+        $cars = Car::all();
+        return view('admin.carmodels.edit', [
+            'carModel' => $carmodel,
+            'cars' => $cars
+        ]);
     }
 
-    // Cập nhật mẫu xe
-    public function update(Request $request, $id)
+    public function update(Request $request, CarModel $carmodel)
     {
-        $carModel = CarModel::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|min:3',
+        $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-
-        $carModel->update($validated);
+        $carmodel->update([
+            'car_id' => $request->car_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'is_active' => $request->boolean('is_active'),
+        ]);
 
         return redirect()->route('admin.carmodels.index')->with('success', 'Cập nhật mẫu xe thành công!');
     }
 
-    // Xóa mẫu xe
-    public function destroy($id)
+    public function destroy(CarModel $carmodel)
     {
-        $carModel = CarModel::findOrFail($id);
-        $carModel->delete();
-
-        return redirect()->route('admin.carmodels.index')->with('success', 'Đã xóa mẫu xe!');
+        $carmodel->delete();
+        return redirect()->route('admin.carmodels.index')->with('success', 'Xoá mẫu xe thành công!');
     }
 }

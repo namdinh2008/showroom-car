@@ -3,16 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accessory;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Models\Accessory;
 
 class AccessoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $accessories = Accessory::with('product')->latest()->get();
-        return view('admin.accessories.index', compact('accessories'));
+        $query = Accessory::with('product');
+
+        if ($request->has('search') && $request->search !== '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $accessories = $query->orderByDesc('created_at')->paginate(10);
+
+        return view('admin.accessories.index', [
+            'accessories' => $accessories,
+            'search' => $request->search,
+        ]);
     }
 
     public function create()
@@ -23,16 +33,21 @@ class AccessoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:3',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image_path' => 'nullable|string',
+            'is_active' => 'required|boolean',
         ]);
 
-        $validated['product_type'] = 'accessory';
-        $validated['is_active'] = $request->has('is_active');
-
-        $product = Product::create($validated);
+        $product = Product::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? '',
+            'price' => $validated['price'],
+            'image_path' => $validated['image_path'] ?? null,
+            'product_type' => 'accessory',
+            'is_active' => $validated['is_active'],
+        ]);
 
         Accessory::create([
             'product_id' => $product->id,
@@ -49,19 +64,23 @@ class AccessoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $accessory = Accessory::findOrFail($id);
-        $product = $accessory->product;
+        $accessory = Accessory::with('product')->findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|min:3',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image_path' => 'nullable|string',
+            'is_active' => 'required|boolean',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-
-        $product->update($validated);
+        $accessory->product->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? '',
+            'price' => $validated['price'],
+            'image_path' => $validated['image_path'] ?? null,
+            'is_active' => $validated['is_active'],
+        ]);
 
         return redirect()->route('admin.accessories.index')->with('success', 'Cập nhật phụ kiện thành công!');
     }
@@ -69,7 +88,8 @@ class AccessoryController extends Controller
     public function destroy($id)
     {
         $accessory = Accessory::findOrFail($id);
-        $accessory->product()->delete();
+        $accessory->delete();
+
         return redirect()->route('admin.accessories.index')->with('success', 'Xoá phụ kiện thành công!');
     }
 }

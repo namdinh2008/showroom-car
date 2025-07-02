@@ -9,20 +9,10 @@ class CarModel extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'image_url',
-        'is_active',
-    ];
+    protected $fillable = ['car_id', 'name', 'description', 'is_active'];
 
-    public function variants()
+    public function car()
     {
-        return $this->hasMany(CarVariant::class);
-    }
-
-    public function images()
-    {
-        return $this->hasMany(CarModelImage::class);
+        return $this->belongsTo(Car::class);
     }
 }

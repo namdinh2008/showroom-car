@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -32,14 +33,20 @@ class BlogController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|min:3',
             'content' => 'required|string',
-            'image_url' => 'nullable|url',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $validated['admin_id'] = Auth::id();
-        $validated['is_published'] = $request->has('is_published');
-        $validated['published_at'] = $validated['is_published'] ? now() : null;
+        $data = $request->only(['title', 'content']);
+        $data['admin_id'] = Auth::id();
+        $data['is_published'] = $request->has('is_published');
+        $data['published_at'] = $data['is_published'] ? now() : null;
 
-        Blog::create($validated);
+        // Upload ảnh nếu có
+        if ($request->hasFile('image_path')) {
+            $data['image_path'] = $request->file('image_path')->store('uploads/blogs', 'public');
+        }
+
+        Blog::create($data);
 
         return redirect()->route('admin.blogs.index')->with('success', 'Đăng bài viết thành công!');
     }
@@ -57,20 +64,37 @@ class BlogController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|min:3',
             'content' => 'required|string',
-            'image_url' => 'nullable|url',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $validated['is_published'] = $request->has('is_published');
-        $validated['published_at'] = $validated['is_published'] ? now() : null;
+        $data = $request->only(['title', 'content']);
+        $data['is_published'] = $request->has('is_published');
+        $data['published_at'] = $data['is_published'] ? now() : null;
 
-        $blog->update($validated);
+        // Nếu có upload ảnh mới thì xoá ảnh cũ rồi lưu ảnh mới
+        if ($request->hasFile('image_path')) {
+            if ($blog->image_path && Storage::disk('public')->exists($blog->image_path)) {
+                Storage::disk('public')->delete($blog->image_path);
+            }
+            $data['image_path'] = $request->file('image_path')->store('uploads/blogs', 'public');
+        }
+
+        $blog->update($data);
 
         return redirect()->route('admin.blogs.index')->with('success', 'Cập nhật bài viết thành công!');
     }
 
     public function destroy($id)
     {
-        Blog::findOrFail($id)->delete();
+        $blog = Blog::findOrFail($id);
+
+        // Xoá ảnh nếu có
+        if ($blog->image_path && Storage::disk('public')->exists($blog->image_path)) {
+            Storage::disk('public')->delete($blog->image_path);
+        }
+
+        $blog->delete();
+
         return redirect()->route('admin.blogs.index')->with('success', 'Xóa bài viết thành công!');
     }
 }

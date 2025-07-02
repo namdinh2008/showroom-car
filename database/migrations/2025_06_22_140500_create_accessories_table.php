@@ -10,6 +10,11 @@ return new class extends Migration {
         Schema::create('accessories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description');
+            $table->decimal('price', 12, 2);
+            $table->string('image_path')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

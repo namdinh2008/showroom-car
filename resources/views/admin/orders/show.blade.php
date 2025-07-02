@@ -3,80 +3,100 @@
 @section('title', 'Chi tiết đơn hàng')
 
 @section('content')
-<div class="bg-white p-6 rounded shadow max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">📦 CHI TIẾT ĐƠN HÀNG</h1>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">📦 CHI TIẾT ĐƠN HÀNG</h6>
+        <div>
+            @php
+                $statusMap = [
+                    'pending' => 'confirmed',
+                    'confirmed' => 'shipping',
+                    'shipping' => 'delivered',
+                ];
+            @endphp
 
-    {{-- Thông tin đơn hàng --}}
-    <div class="mb-6">
-        <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
-            <div><strong>Họ tên:</strong> {{ $order->name }}</div>
-            <div><strong>Email:</strong> {{ $order->email }}</div>
-            <div><strong>Số điện thoại:</strong> {{ $order->phone }}</div>
-            <div><strong>Địa chỉ:</strong> {{ $order->address }}</div>
-            <div><strong>Phương thức thanh toán:</strong> {{ strtoupper($order->payment_method) }}</div>
-            <div><strong>Trạng thái:</strong>
-                @php
-                    $colors = [
-                        'pending' => 'bg-yellow-100 text-yellow-800',
-                        'processing' => 'bg-blue-100 text-blue-800',
-                        'shipped' => 'bg-green-100 text-green-800',
-                        'cancelled' => 'bg-red-100 text-red-800',
-                    ];
-                @endphp
-                <span class="inline-block px-2 py-1 text-xs rounded {{ $colors[$order->status] ?? '' }}">
-                    {{ ucfirst($order->status) }}
-                </span>
+            @if ($order->status !== 'delivered' && $order->status !== 'cancelled')
+                @if (isset($statusMap[$order->status]))
+                    <form method="POST" action="{{ route('admin.orders.nextStatus', $order->id) }}" class="d-inline">
+                        @csrf
+                        <button class="btn btn-sm btn-primary" onclick="return confirm('Chuyển sang trạng thái tiếp theo?')">
+                            Sang trạng thái: {{ ucfirst($statusMap[$order->status]) }}
+                        </button>
+                    </form>
+                @endif
+                <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}" class="d-inline">
+                    @csrf
+                    <button class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn huỷ đơn này?')">Huỷ đơn</button>
+                </form>
+            @endif
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong>Họ tên:</strong> {{ $order->name }}</p>
+                <p><strong>Số điện thoại:</strong> {{ $order->phone }}</p>
+                <p><strong>Email:</strong> {{ $order->email }}</p>
+                <p><strong>Địa chỉ:</strong> {{ $order->address }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Phương thức thanh toán:</strong> {{ strtoupper($order->payment_method) }}</p>
+                <p><strong>Trạng thái:</strong>
+                    @php
+                        $colors = [
+                            'pending' => 'badge-warning',
+                            'confirmed' => 'badge-primary',
+                            'shipping' => 'badge-info',
+                            'delivered' => 'badge-success',
+                            'cancelled' => 'badge-danger',
+                        ];
+                    @endphp
+                    <span class="badge {{ $colors[$order->status] ?? 'badge-secondary' }}">
+                        {{ ucfirst($order->status) }}
+                    </span>
+                </p>
+                @if ($order->note)
+                    <p><strong>Ghi chú:</strong> {{ $order->note }}</p>
+                @endif
             </div>
         </div>
-        @if ($order->note)
-            <div class="mt-4 text-sm text-gray-600"><strong>Ghi chú:</strong> {{ $order->note }}</div>
-        @endif
-    </div>
 
-    {{-- Danh sách sản phẩm --}}
-    <div class="border-t pt-4">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4">🧾 Sản phẩm trong đơn</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm border border-gray-200 rounded shadow-sm">
-                <thead class="bg-gray-100 text-gray-700">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="thead-light">
                     <tr>
-                        <th class="px-4 py-2 border-b">#</th>
-                        <th class="px-4 py-2 border-b">Sản phẩm</th>
-                        <th class="px-4 py-2 border-b">Hình ảnh</th>
-                        <th class="px-4 py-2 border-b text-center">Màu</th>
-                        <th class="px-4 py-2 border-b text-center">Số lượng</th>
-                        <th class="px-4 py-2 border-b text-right">Đơn giá</th>
+                        <th>#</th>
+                        <th>Sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th class="text-center">Màu</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-right">Đơn giá</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-800">
+                <tbody>
                     @foreach ($order->items as $index => $item)
-                        <tr class="border-t">
-                            <td class="px-4 py-2 align-middle">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2 align-middle">{{ $item->product->name ?? '-' }}</td>
-                            <td class="px-4 py-2 align-middle">
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $item->product->name ?? '-' }}</td>
+                            <td>
                                 @if ($item->product->image_url)
-                                    <img src="{{ $item->product->image_url }}" alt="" class="w-16 h-16 object-cover rounded">
+                                    <img src="{{ $item->product->image_url }}" alt="image" width="60">
                                 @else
-                                    <span class="text-gray-400 italic">Không ảnh</span>
+                                    <span class="text-muted">Không ảnh</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-2 align-middle text-center">
-                                {{ $item->color->color_name ?? '-' }}
-                            </td>
-                            <td class="px-4 py-2 align-middle text-center">{{ $item->quantity }}</td>
-                            <td class="px-4 py-2 align-middle text-right">
-                                {{ number_format($item->price, 0, ',', '.') }} đ
-                            </td>
+                            <td class="text-center">{{ $item->color->color_name ?? '-' }}</td>
+                            <td class="text-center">{{ $item->quantity }}</td>
+                            <td class="text-right">{{ number_format($item->price, 0, ',', '.') }} đ</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
 
-    {{-- Tổng tiền --}}
-    <div class="text-right mt-6 text-lg font-bold text-gray-800">
-        Tổng tiền: {{ number_format($order->total_price, 0, ',', '.') }} đ
+        <div class="text-right font-weight-bold text-lg mt-4">
+            Tổng tiền: {{ number_format($order->total_price, 0, ',', '.') }} đ
+        </div>
     </div>
 </div>
 @endsection

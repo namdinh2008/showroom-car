@@ -15,6 +15,7 @@ class Product extends Model
         'price',
         'image_url',
         'product_type',
+        'reference_id',
         'is_active',
     ];
 

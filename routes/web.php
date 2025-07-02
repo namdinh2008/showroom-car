@@ -6,6 +6,7 @@ use App\Http\Middleware\IsAdmin;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\CarModelController;
 use App\Http\Controllers\Admin\CarVariantController;
 use App\Http\Controllers\Admin\OrderController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\WishlistController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AccessoryController;
+use App\Http\Controllers\Admin\OrderLogController;
 
 
 // Public Controllers
@@ -55,6 +57,16 @@ Route::post('/cart/checkout', [CartController::class, 'processCheckout'])->name(
 Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Car
+    Route::prefix('cars')->name('cars.')->group(function () {
+        Route::get('/', [CarController::class, 'index'])->name('index');
+        Route::get('/create', [CarController::class, 'create'])->name('create');
+        Route::post('/store', [CarController::class, 'store'])->name('store');
+        Route::get('/edit/{car}', [CarController::class, 'edit'])->name('edit');
+        Route::put('/update/{car}', [CarController::class, 'update'])->name('update');
+        Route::delete('/delete/{car}', [CarController::class, 'destroy'])->name('destroy');
+    });
+
     // Car Models
     Route::prefix('carmodels')->name('carmodels.')->group(function () {
         Route::get('/', [CarModelController::class, 'index'])->name('index');
@@ -94,8 +106,15 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
         Route::put('/update/{order}', [OrderController::class, 'update'])->name('update');
         Route::delete('/delete/{order}', [OrderController::class, 'destroy'])->name('destroy');
         Route::get('/{order}', [OrderController::class, 'show'])->name('show');
-    });
+        Route::get('/{order}/logs', [\App\Http\Controllers\Admin\OrderLogController::class, 'logs'])->name('logs');
 
+        // Chuyển trạng thái đơn
+        Route::post('/{order}/next-status', [OrderController::class, 'nextStatus'])->name('nextStatus');
+        Route::post('/{order}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+
+        // Logs
+        Route::get('/{order}/logs', [OrderLogController::class, 'index'])->name('logs');
+    });
     // Products
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
