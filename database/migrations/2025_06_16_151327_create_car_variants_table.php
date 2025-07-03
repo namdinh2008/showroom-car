@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('car_variants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('car_model_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();

@@ -44,6 +44,10 @@ class AccessorySeeder extends Seeder
 
             Accessory::create([
                 'product_id' => $product->id,
+                'name' => $item['name'],
+                'description' => $item['description'],
+                'price' => $item['price'],
+                'is_active' => true,
             ]);
         }
     }

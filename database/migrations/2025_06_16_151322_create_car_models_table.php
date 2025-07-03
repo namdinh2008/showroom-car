@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
             $table->string('name');
+            $table->string('image_url')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

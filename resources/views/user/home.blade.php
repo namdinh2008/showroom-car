@@ -72,7 +72,7 @@
                 <!-- Nút thêm vào giỏ hàng ở góc phải trên ảnh -->
                 <form action="{{ route('cart.add') }}" method="POST" class="absolute top-3 right-3 z-20">
                     @csrf
-                    <input type="hidden" name="product_id" value="{{ $car->product_id  }}">
+                    <input type="hidden" name="product_id" value="{{ $car->product_id }}">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="color_id" value="{{ $firstColor ? $firstColor->id : '' }}">
                     <button type="submit" class="bg-indigo-700 text-white font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-800 transition-colors duration-300 shadow flex items-center">
@@ -83,7 +83,7 @@
                     <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{ $car->description }}</p>
                     <div class="flex items-center justify-between">
                         <span class="text-red-600 font-bold text-lg">
-                            {{ number_format($car->product->price) }} <span class="text-base">đ</span>
+                            {{ $car->product ? number_format($car->product->price) : 'N/A' }} <span class="text-base">đ</span>
                         </span>
                         <span>{{ $firstColor->color_name }}</span>
                         <span class="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full border border-green-200">
@@ -106,7 +106,7 @@
             <div class="relative border border-gray-200 rounded-2xl p-6 text-center bg-white hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <img src="{{ $item->product->image_url }}" class="h-36 object-contain mx-auto mb-4" alt="{{ $item->product->name }}">
                 <h3 class="font-bold text-lg text-gray-800 mb-1 line-clamp-2">{{ $item->product->name }}</h3>
-                <p class="text-red-600 text-xl font-semibold mb-2">{{ number_format($item->product->price) }} đ</p>
+                <p class="text-red-600 text-xl font-semibold mb-2">{{ $item->product ? number_format($item->product->price) : 'N/A' }} đ</p>
                 <!-- Nút thêm vào giỏ hàng ở góc phải -->
                 <form action="{{ route('cart.add') }}" method="POST" class="absolute top-4 right-4 z-10">
                     @csrf
